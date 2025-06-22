@@ -1,0 +1,223 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id                Int       @id @default(autoincrement())
+  email             String    @unique @db.VarChar(100)
+  password_hash     String    @db.VarChar(255)
+  nombre            String    @db.VarChar(50)
+  apellido          String    @db.VarChar(50)
+  telefono          String?   @db.VarChar(20)
+  direccion         String?
+  fecha_registro    DateTime  @default(now())
+  ultimo_login      DateTime?
+  activo            Boolean   @default(true)
+  es_vendedor       Boolean   @default(false)
+  es_administrador  Boolean   @default(false)
+  
+  vendedor          Vendedor?
+  ordenes           Orden[]
+  mensajesEnviados  Mensaje[] @relation("MensajesEnviados")
+  mensajesRecibidos Mensaje[] @relation("MensajesRecibidos")
+  favoritos         Favorito[]
+  reseñas           Reseña[]
+  reportes          Reporte[]
+  acciones          AccionAdministrativa[]
+}
+
+model Vendedor {
+  usuario_id           Int      @id
+  nombre_tienda        String   @db.VarChar(100)
+  descripcion_tienda   String?
+  rfc                  String?  @db.VarChar(20)
+  cuenta_bancaria      String?  @db.VarChar(50)
+  calificacion_promedio Decimal  @default(0) @db.Decimal(3, 2)
+  
+  usuario              Usuario  @relation(fields: [usuario_id], references: [id])
+  productos            Producto[]
+  promociones          Promocion[]
+}
+
+model Categoria {
+  id          Int        @id @default(autoincrement())
+  nombre      String     @db.VarChar(50)
+  descripcion String?
+  
+  productos   Producto[]
+}
+
+model Producto {
+  id                 Int         @id @default(autoincrement())
+  vendedor_id        Int
+  categoria_id       Int?
+  nombre             String      @db.VarChar(100)
+  descripcion        String
+  precio             Decimal     @db.Decimal(10, 2)
+  stock              Int         @default(0)
+  fecha_publicacion  DateTime    @default(now())
+  activo             Boolean     @default(true)
+  
+  vendedor           Vendedor    @relation(fields: [vendedor_id], references: [usuario_id])
+  categoria          Categoria?  @relation(fields: [categoria_id], references: [id])
+  imagenes           ImagenProducto[]
+  detallesOrden      DetalleOrden[]
+  favoritos          Favorito[]
+  reseñas            Reseña[]
+  mensajes           Mensaje[]
+  promociones        Promocion[]
+  estadisticas       EstadisticaProducto[]
+}
+
+model ImagenProducto {
+  id          Int      @id @default(autoincrement())
+  producto_id Int
+  url_imagen  String   @db.Text
+  orden       Int      @default(0)
+  
+  producto    Producto @relation(fields: [producto_id], references: [id])
+}
+
+model Favorito {
+  usuario_id      Int
+  producto_id     Int
+  fecha_agregado  DateTime @default(now())
+  
+  usuario         Usuario  @relation(fields: [usuario_id], references: [id])
+  producto        Producto @relation(fields: [producto_id], references: [id])
+  
+  @@id([usuario_id, producto_id])
+}
+
+model Orden {
+  id              Int            @id @default(autoincrement())
+  comprador_id    Int
+  fecha_orden     DateTime       @default(now())
+  estado          OrdenEstado    @default(pendiente)
+  total           Decimal        @db.Decimal(10, 2)
+  direccion_envio String
+  
+  comprador       Usuario        @relation(fields: [comprador_id], references: [id])
+  detalles        DetalleOrden[]
+  reseñas         Reseña[]
+}
+
+model DetalleOrden {
+  orden_id         Int
+  producto_id      Int
+  cantidad         Int
+  precio_unitario  Decimal @db.Decimal(10, 2)
+  subtotal         Decimal @db.Decimal(10, 2)
+  
+  orden            Orden    @relation(fields: [orden_id], references: [id])
+  producto         Producto @relation(fields: [producto_id], references: [id])
+  
+  @@id([orden_id, producto_id])
+  @@map("detalles_orden")
+}
+
+model Reseña {
+  id                Int      @id @default(autoincrement())
+  orden_id          Int
+  producto_id       Int
+  usuario_id        Int
+  calificacion      Int
+  comentario        String?
+  fecha_publicacion DateTime @default(now())
+  
+  orden             Orden    @relation(fields: [orden_id], references: [id])
+  producto          Producto @relation(fields: [producto_id], references: [id])
+  usuario           Usuario  @relation(fields: [usuario_id], references: [id])
+  
+  @@map("reseñas")
+}
+
+model Mensaje {
+  id             Int       @id @default(autoincrement())
+  remitente_id   Int
+  destinatario_id Int
+  producto_id    Int?
+  asunto         String?   @db.VarChar(100)
+  contenido      String
+  fecha_envio    DateTime  @default(now())
+  leido          Boolean   @default(false)
+  
+  remitente      Usuario   @relation("MensajesEnviados", fields: [remitente_id], references: [id])
+  destinatario   Usuario   @relation("MensajesRecibidos", fields: [destinatario_id], references: [id])
+  producto       Producto? @relation(fields: [producto_id], references: [id])
+}
+
+model Promocion {
+  id           Int      @id @default(autoincrement())
+  vendedor_id  Int
+  producto_id  Int?
+  descripcion  String
+  descuento    Decimal  @db.Decimal(5, 2)
+  fecha_inicio DateTime
+  fecha_fin    DateTime
+  activa       Boolean  @default(true)
+  
+  vendedor     Vendedor @relation(fields: [vendedor_id], references: [usuario_id])
+  producto     Producto? @relation(fields: [producto_id], references: [id])
+  
+  @@map("promociones")
+}
+
+model EstadisticaProducto {
+  producto_id      Int
+  fecha            DateTime
+  vistas           Int     @default(0)
+  clicks_contacto  Int     @default(0)
+  
+  producto         Producto @relation(fields: [producto_id], references: [id])
+  
+  @@id([producto_id, fecha])
+  @@map("estadisticas_productos")
+}
+
+model Reporte {
+  id               Int       @id @default(autoincrement())
+  administrador_id Int
+  tipo_reporte     String    @db.VarChar(50)
+  parametros       Json?
+  fecha_generacion DateTime  @default(now())
+  contenido        String?
+  
+  administrador    Usuario   @relation(fields: [administrador_id], references: [id])
+  
+  @@map("reportes")
+}
+
+model AccionAdministrativa {
+  id              Int       @id @default(autoincrement())
+  administrador_id Int
+  tipo_accion     String    @db.VarChar(50)
+  entidad_afectada String    @db.VarChar(50)
+  id_entidad      Int
+  detalles        String?
+  fecha_accion    DateTime  @default(now())
+  
+  administrador   Usuario   @relation(fields: [administrador_id], references: [id])
+  
+  @@map("acciones_administrativas")
+}
+
+enum OrdenEstado {
+  pendiente
+  procesando
+  enviado
+  entregado
+  cancelado
+}

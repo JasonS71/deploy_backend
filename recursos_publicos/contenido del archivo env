@@ -1,0 +1,4 @@
+DATABASE_URL="mysql://root:@localhost:3306/db_sis325v1"
+JWT_SECRET="tu_secreto_jwt_super_seguro"
+JWT_EXPIRES_IN="24h"
+PORT=3000

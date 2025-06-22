@@ -1,0 +1,358 @@
+{
+	"info": {
+		"_postman_id": "c760da7b-96be-4ce7-b8cd-0278e8143ba4",
+		"name": "sis325_backend_API",
+		"description": "API para plataforma de compra-venta de productos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43535365",
+		"_collection_link": "https://cesarmiranda-6175305.postman.co/workspace/Cesar-Miranda's-Workspace~eafdfbc2-7530-439b-8999-83c06641b5b2/collection/43535365-c760da7b-96be-4ce7-b8cd-0278e8143ba4?action=share&source=collection_link&creator=43535365"
+	},
+	"item": [
+		{
+			"name": "Autenticación",
+			"item": [
+				{
+					"name": "Registro de Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"comprador@example.com\",\n    \"password\": \"password123\",\n    \"nombre\": \"Juan\",\n    \"apellido\": \"Pérez\",\n    \"telefono\": \"1234567890\",\n    \"direccion\": \"Calle Principal 123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						},
+						"description": "Registrar un nuevo usuario en la plataforma"
+					},
+					"response": []
+				},
+				{
+					"name": "Iniciar Sesión",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29tcHJhZG9yQGV4YW1wbGUuY29tIiwiaXNWZW5kb3IiOmZhbHNlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzQzOTcxMDQyLCJleHAiOjE3NDQwNTc0NDJ9.kaVXf7GilZiqRo2B5rwUvVsY7T3z499NqjdbQLRWqCM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"comprador@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Iniciar sesión en el sistema"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints relacionados con la autenticación y registro de usuarios"
+		},
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "Obtener Perfil",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29tcHJhZG9yQGV4YW1wbGUuY29tIiwiaXNWZW5kb3IiOmZhbHNlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzQzOTcxMDc0LCJleHAiOjE3NDQwNTc0NzR9.KMfXww0Dpo_QOQnb2Gxy1-BJhglHlVR7R6LO1jU0mNc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/usuarios/perfil",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"usuarios",
+								"perfil"
+							]
+						},
+						"description": "Obtener el perfil del usuario autenticado"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints relacionados con la gestión de usuarios"
+		},
+		{
+			"name": "Vendedores",
+			"item": [
+				{
+					"name": "Crear Perfil de Vendedor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29tcHJhZG9yQGV4YW1wbGUuY29tIiwiaXNWZW5kb3IiOmZhbHNlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzQzOTcxMDc0LCJleHAiOjE3NDQwNTc0NzR9.KMfXww0Dpo_QOQnb2Gxy1-BJhglHlVR7R6LO1jU0mNc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre_tienda\": \"Tienda de Juan\",\n    \"descripcion_tienda\": \"Venta de productos electrónicos y accesorios\",\n    \"rfc\": \"XAXX010101000\",\n    \"cuenta_bancaria\": \"0123456789\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/vendedores",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vendedores"
+							]
+						},
+						"description": "Crear un perfil de vendedor para el usuario autenticado"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Perfil de Vendedor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidm9zQGV4YW1wbGUuY29tIiwiaXNWZW5kb3IiOmZhbHNlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzQzOTc0NDE5LCJleHAiOjE3NDQwNjA4MTl9.j-6lxkF0rF36TMa4mDns44pmZqxTV6-cm-m4Tmt_fC4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/vendedores/perfil",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vendedores",
+								"perfil"
+							]
+						},
+						"description": "Obtener perfil de vendedor del usuario autenticado"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints relacionados con la gestión de vendedores"
+		},
+		{
+			"name": "Productos",
+			"item": [
+				{
+					"name": "Crear Producto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29tcHJhZG9yQGV4YW1wbGUuY29tIiwiaXNWZW5kb3IiOmZhbHNlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzQzOTcxMDc0LCJleHAiOjE3NDQwNTc0NzR9.KMfXww0Dpo_QOQnb2Gxy1-BJhglHlVR7R6LO1jU0mNc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Smartphone de Cesar\",\n    \"descripcion\": \"Smartphone de última generación con 8GB de RAM y 256GB de almacenamiento\",\n    \"precio\": 9999.99,\n    \"stock\": 20,\n    \"categoria_id\": 1,\n    \"imagenes\": [\n        \"https://example.com/imagen1.jpg\",\n        \"https://example.com/imagen2.jpg\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/productos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"productos"
+							]
+						},
+						"description": "Crear un nuevo producto (requiere ser vendedor)"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Productos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/productos?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"productos"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "categoria_id",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "nombre",
+									"value": "smartphone",
+									"disabled": true
+								},
+								{
+									"key": "precio_min",
+									"value": "5000",
+									"disabled": true
+								},
+								{
+									"key": "precio_max",
+									"value": "10000",
+									"disabled": true
+								},
+								{
+									"key": "vendedor_id",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Obtener el listado de productos con opciones de filtrado y paginación"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Producto por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/productos/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"productos",
+								"3"
+							]
+						},
+						"description": "Obtener los detalles de un producto específico por su ID"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints relacionados con la gestión de productos"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Guardar automáticamente el token al iniciar sesión",
+					"if (pm.request.url.path[1] === \"auth\" && pm.request.url.path[2] === \"login\") {",
+					"    const responseJson = pm.response.json();",
+					"    if (responseJson && responseJson.access_token) {",
+					"        pm.environment.set(\"token\", responseJson.access_token);",
+					"        console.log(\"Token guardado en variable de entorno: \" + responseJson.access_token);",
+					"    }",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000/",
+			"type": "string"
+		}
+	]
+}
